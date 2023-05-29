@@ -13,6 +13,7 @@ public class main{
         String strThemeChoice[][];
         String strChoice;
         int intThemeLength;
+        int intCount1;
 
         con.print("Do you want to create a theme or play?\n> ");
         strChoice = con.readLine();
@@ -22,6 +23,7 @@ public class main{
         }else{
             //Gets the users theme choice
             strChoice = themeSelect(con);
+            strChoice = strChoice + ".txt";
             TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strChoice);
 
             //Loads their theme choice into an array
@@ -31,8 +33,17 @@ public class main{
             txtThemeChoice = new TextInputFile("Themes/"+strChoice);
             strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
             txtThemeChoice.close();
-
-            for(int intCount1 = 0;intCount1 < intThemeLength; intCount1++){
+			
+			//Prints the un-sorted version of the array
+            for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
+                System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
+            }
+            
+            //Sorts the theme
+            strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
+            
+            //Prints the sorted version of the array
+            for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
                 System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
             }
         }
