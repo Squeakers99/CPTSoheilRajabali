@@ -6,13 +6,14 @@
 
 import arc.*;
 
-public class main{
+public class Hangman{
     public static void main(String[] args){
         //Initializes varables
         Console con = new Console();
         String strThemeChoice[][];
         String strChoice;
         int intThemeLength;
+        int intCount1;
 
         con.print("Do you want to create a theme or play?\n> ");
         strChoice = con.readLine();
@@ -32,7 +33,19 @@ public class main{
             strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
             txtThemeChoice.close();
 
-            for(int intCount1 = 0;intCount1 < intThemeLength; intCount1++){
+            //Prints out the array
+            for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
+                System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
+            }
+
+            //Sorts the array
+            strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
+            
+            //Message to seperate
+            System.out.println("Sorted:");
+
+            //Prints out the sorted array
+            for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
                 System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
             }
         }

@@ -52,4 +52,34 @@ public class arrayTools {
         txtFile.close();
         return strArray;
     }
+
+    //Bubble sort method to sort an array
+    public static String[][] bubbleSort(String strSortedArray[][], int intCount){
+		//Defines required variables for sorting
+		int intBelow;
+		int intCurrent;
+		int intCounter;
+		int intCounter2;
+		String strTemp;
+		
+		//Loops to sort
+		for(intCounter2 = 0; intCounter2 < intCount-1; intCounter2++){
+			for(intCounter = 0; intCounter < intCount-intCounter2-1; intCounter++){
+				intBelow = Integer.parseInt(strSortedArray[intCounter+1][1]);
+				intCurrent = Integer.parseInt(strSortedArray[intCounter][1]);
+				if(intBelow > intCurrent){
+                    strTemp = strSortedArray[intCounter+1][0];
+					strSortedArray[intCounter+1][0] = strSortedArray[intCounter][0];
+					strSortedArray[intCounter][0] = strTemp;
+
+                    strTemp = strSortedArray[intCounter+1][1];
+					strSortedArray[intCounter+1][1] = strSortedArray[intCounter][1];
+					strSortedArray[intCounter][1] = strTemp;
+				}
+			}
+		}
+		
+		//Returns your sorted array
+		return strSortedArray;
+	}
 }
