@@ -5,16 +5,19 @@
  */
 
 import arc.*;
+import java.awt.*;
 
 public class Hangman{
     public static void main(String[] args){
-        //Initializes varables
+		Console con = new Console("Hangman", 1280, 720);
+		homeScreen(con);
+		
+        /*Initializes varables
         Console con = new Console();
         String strThemeChoice[][];
         String strChoice;
         int intThemeLength;
         int intCount1;
-
         con.print("Do you want to create a theme or play?\n> ");
         strChoice = con.readLine();
 
@@ -48,10 +51,32 @@ public class Hangman{
             for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
                 System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
             }
-        }
+        }*/
     }
-
-    //Method to select a theme
+    
+    public static void homeScreen(Console con){
+		int intMouseX = 0;
+		int intMouseY = 0;
+		int intMouseButtonClicked = 0;
+		
+		choiceMenu(con, "Play", "Help", "Add Theme", "N/A", "N/A", 40, intMouseX, intMouseY, intMouseButtonClicked);
+	}
+    
+    public static void drawRectangleOutline(Console con, int intX, int intY, int intWidth, int intHeight, int intThickness){
+		//Defines a variable for the loop
+		int intCount;
+		
+		//loops to create a rectangle with a given thickness
+		for(intCount = intThickness;intCount > 0;intCount--){
+			con.drawRect(intX,intY,intWidth,intHeight);
+			intX += 1;
+			intY += 1;
+			intWidth -= 2;
+			intHeight -= 2;
+		}
+	}
+    
+    //Theme Select
     public static String themeSelect(Console con){
         //Variable Definitions
         String strChoice;
@@ -109,4 +134,89 @@ public class Hangman{
         txtThemeFile.close();
         txtThemes.close();
     }
+    
+	public static String choiceMenu(Console con, String strButton1, String strButton2, String strButton3, String strButton4, String strButton5, int intFontSize, int intMouseX, int intMouseY, int intMouseButtonClicked){
+		//Defines and loads in the fonts
+		Font fntButtonFont;
+		Font fntRegularFont;
+		fntButtonFont = con.loadFont("Fonts/Button Font.ttf", intFontSize);
+		fntRegularFont = con.loadFont("Fonts/Regular Font.ttf", 14);
+		
+		//Sets the color to grey
+		con.setDrawColor(Color.gray);
+		
+		//If only 2 buttons are needed, only draws 2 buttons
+		if(strButton3.equalsIgnoreCase("n/a") && strButton4.equalsIgnoreCase("n/a") && strButton5.equalsIgnoreCase("n/a")){
+			con.fillRect(194, 385, 400, 100);
+			con.fillRect(647, 385, 400, 100);
+			
+			con.setDrawColor(Color.white);
+			con.setDrawFont(fntButtonFont);
+			
+			con.drawString(strButton1, 204, 380);
+			con.drawString(strButton2, 657, 380);
+	
+		//If all 5 buttons are needed, draws all 5 buttons
+		}else{
+			con.fillRect(194, 240, 400, 100);
+			con.fillRect(647, 240, 400, 100);
+			con.fillRect(194, 385, 400, 100);
+			con.fillRect(647, 385, 400, 100);
+			con.fillRect(425, 531, 400, 100);
+			
+			con.setDrawColor(Color.white);
+			con.setDrawFont(fntButtonFont);
+			
+			con.drawString(strButton1, 234, 250);
+			con.drawString(strButton2, 677, 250);
+			con.drawString(strButton3, 204, 380);
+			con.drawString(strButton4, 657, 380);
+			con.drawString(strButton5, 435, 526);
+		}
+		
+		//Resets the font back to normal
+		con.setDrawFont(fntRegularFont);
+		
+		while(true){
+			//Gets the mouse inputs from the user
+			intMouseX = con.currentMouseX();
+			intMouseY = con.currentMouseY();
+			intMouseButtonClicked = con.currentMouseButton();
+			
+			//Repaints the scene
+			con.repaint();
+			
+			//If there are 5 buttons and button 1 is hovered, this runs
+			if(!strButton3.equalsIgnoreCase("n/a") && ((((intMouseX >= 194) && (intMouseX <= 594)) && ((intMouseY >= 240) && (intMouseY <= 340))))){
+				con.setDrawColor(Color.red);
+				drawRectangleOutline(con, 191, 237, 403, 103, 3);
+				
+				//If the button is clicked, it is returned
+				if(intMouseButtonClicked == 1){
+					return strButton1;
+				}
+			
+			//If there are 5 buttons and button 2 is hovered, this runs
+			}else if(!strButton3.equalsIgnoreCase("n/a") && ((((intMouseX >= 647) && (intMouseX <= 1047)) && ((intMouseY >= 240) && (intMouseY <= 340))))){
+				con.setDrawColor(Color.red);
+				drawRectangleOutline(con, 644, 237, 403, 103, 3);
+				
+				//If the button is clicked, it is returned
+				if(intMouseButtonClicked == 1){
+					return strButton2;
+				}
+			
+			//If there are 5 buttons and button 5 is hovered, this runs
+			}else if(!strButton3.equalsIgnoreCase("n/a") && ((((intMouseX >= 425) && (intMouseX <= 825)) && ((intMouseY >= 531) && (intMouseY <= 631))))){
+				con.setDrawColor(Color.red);
+				drawRectangleOutline(con, 422, 528, 403, 103, 3);
+				
+				//If the button is clicked, it is returned
+				if(intMouseButtonClicked == 1){
+					return strButton5;
+				}		
+			}
+			con.sleep(33);
+		}
+	}
 }
