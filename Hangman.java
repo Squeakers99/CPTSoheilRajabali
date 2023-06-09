@@ -23,7 +23,6 @@ public class Hangman{
         }else{
             //Gets the users theme choice
             strChoice = themeSelect(con);
-            strChoice = strChoice + ".txt";
             TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strChoice);
 
             //Loads their theme choice into an array
@@ -51,6 +50,8 @@ public class Hangman{
             }
         }
     }
+
+    //Method to select a theme
     public static String themeSelect(Console con){
         //Variable Definitions
         String strChoice;
