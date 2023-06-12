@@ -1,67 +1,77 @@
 /*
  * Soheil Rajabali
  * Hangman
- * V3.0
+ * V4.0
  */
 
 import arc.*;
 import java.awt.*;
+import java.awt.image.*;
 
 public class Hangman{
     public static void main(String[] args){
 		Console con = new Console("Hangman", 1280, 720);
 		homeScreen(con);
-		
-        /*Initializes varables
-        Console con = new Console();
-        String strThemeChoice[][];
-        String strChoice;
-        int intThemeLength;
-        int intCount1;
-        con.print("Do you want to create a theme or play?\n> ");
-        strChoice = con.readLine();
-
-        if(strChoice.equals("Create")){
-            createTheme(con);
-        }else{
-            //Gets the users theme choice
-            strChoice = themeSelect(con);
-            TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strChoice);
-
-            //Loads their theme choice into an array
-            intThemeLength = arrayTools.arrayLength(txtThemeChoice);
-            strThemeChoice = new String[intThemeLength][2];
-            txtThemeChoice.close();
-            txtThemeChoice = new TextInputFile("Themes/"+strChoice);
-            strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
-            txtThemeChoice.close();
-
-            //Prints out the array
-            for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
-                System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
-            }
-
-            //Sorts the array
-            strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
-            
-            //Message to seperate
-            System.out.println("Sorted:");
-
-            //Prints out the sorted array
-            for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
-                System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
-            }
-        }*/
     }
     
+    //Draws the Home Screen of the Game
     public static void homeScreen(Console con){
 		int intMouseX = 0;
 		int intMouseY = 0;
 		int intMouseButtonClicked = 0;
-		
-		choiceMenu(con, "Play", "Help", "Add Theme", "N/A", "N/A", 40, intMouseX, intMouseY, intMouseButtonClicked);
-	}
+		String strChoice = "";
+
+		strChoice = choiceMenu(con, "Play", "Add Theme", "Help", "Leaderboard", "Quit", 40, intMouseX, intMouseY, intMouseButtonClicked);
+
+        con.repaint();
+        con.clear();
+
+        if(strChoice.equals("Play")){
+            playGame(con);
+        }else if(strChoice.equals("Add Theme")){
+            createTheme(con, intMouseX, intMouseY, intMouseButtonClicked);
+        }else if(strChoice.equals("Help")){
+
+        }else if(strChoice.equals("Leaderboard")){
+
+        }else{
+            con.closeConsole();
+        }
+    }
     
+    //Method to play the game
+    public static void playGame(Console con){
+        //Initializes the required variables
+        String strThemeChoice[][];
+        String strChoice;
+        int intThemeLength;
+        int intCount1;
+
+        //Asks the player for their theme choice
+        con.print("What theme would you like to play?\n> ");
+
+        //Gets the users theme choice
+        strChoice = themeSelect(con);
+        TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strChoice);
+
+        //Loads their theme choice into an array
+        intThemeLength = arrayTools.arrayLength(txtThemeChoice);
+        strThemeChoice = new String[intThemeLength][2];
+        txtThemeChoice.close();
+        txtThemeChoice = new TextInputFile("Themes/"+strChoice);
+        strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
+        txtThemeChoice.close();
+
+        //Sorts the array
+        strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
+        
+        //Prints out the sorted array in the debugging window
+        for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
+            System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
+        }
+    }
+
+    //Draws a rectangle with a custom thickness
     public static void drawRectangleOutline(Console con, int intX, int intY, int intWidth, int intHeight, int intThickness){
 		//Defines a variable for the loop
 		int intCount;
@@ -106,7 +116,9 @@ public class Hangman{
         
         return strChoice;
     }
-    public static void createTheme(Console con){
+    
+    //Create theme method
+    public static void createTheme(Console con, int intMouseX, int intMouseY, int intMouseButtonClicked){
         //Defines variables to create a theme
         String strWord = "";
         String strTheme;
@@ -133,8 +145,14 @@ public class Hangman{
         //Closes the theme file and the new themes file
         txtThemeFile.close();
         txtThemes.close();
+
+        //Prints a successful message
+        con.print(strTheme + " has been created!");
+
+        choiceMenu(con, "Back", "N/A", "N/A", "N/A", "N/A", 50, intMouseX, intMouseY, intMouseButtonClicked);
     }
     
+    //Choice Menu to display either 1 2 or 5 choices
 	public static String choiceMenu(Console con, String strButton1, String strButton2, String strButton3, String strButton4, String strButton5, int intFontSize, int intMouseX, int intMouseY, int intMouseButtonClicked){
 		//Defines and loads in the fonts
 		Font fntButtonFont;
@@ -145,8 +163,17 @@ public class Hangman{
 		//Sets the color to grey
 		con.setDrawColor(Color.gray);
 		
+        //If only 1 button is needed, only draws 1 button
+        if(strButton2.equalsIgnoreCase("n/a")){
+            con.fillRect(425, 531, 400, 100);
+
+            con.setDrawColor(Color.white);
+			con.setDrawFont(fntButtonFont);
+
+            con.drawString(strButton1, 435, 526);
+        }
 		//If only 2 buttons are needed, only draws 2 buttons
-		if(strButton3.equalsIgnoreCase("n/a") && strButton4.equalsIgnoreCase("n/a") && strButton5.equalsIgnoreCase("n/a")){
+		else if(strButton3.equalsIgnoreCase("n/a")){
 			con.fillRect(194, 385, 400, 100);
 			con.fillRect(647, 385, 400, 100);
 			
@@ -186,6 +213,7 @@ public class Hangman{
 			//Repaints the scene
 			con.repaint();
 			
+
 			//If there are 5 buttons and button 1 is hovered, this runs
 			if(!strButton3.equalsIgnoreCase("n/a") && ((((intMouseX >= 194) && (intMouseX <= 594)) && ((intMouseY >= 240) && (intMouseY <= 340))))){
 				con.setDrawColor(Color.red);
@@ -206,16 +234,66 @@ public class Hangman{
 					return strButton2;
 				}
 			
-			//If there are 5 buttons and button 5 is hovered, this runs
-			}else if(!strButton3.equalsIgnoreCase("n/a") && ((((intMouseX >= 425) && (intMouseX <= 825)) && ((intMouseY >= 531) && (intMouseY <= 631))))){
+			//If there are 5 buttons or 1 button and button 5 is hovered, this runs
+			}else if((!strButton2.equalsIgnoreCase("n/a") || !strButton3.equalsIgnoreCase("n/a")) && ((((intMouseX >= 425) && (intMouseX <= 825)) && ((intMouseY >= 531) && (intMouseY <= 631))))){
 				con.setDrawColor(Color.red);
 				drawRectangleOutline(con, 422, 528, 403, 103, 3);
 				
 				//If the button is clicked, it is returned
 				if(intMouseButtonClicked == 1){
-					return strButton5;
-				}		
-			}
+                    if(strButton2.equalsIgnoreCase("n/a")){
+                        return strButton1;
+                    }else{
+                        return strButton5;
+                    }
+				}
+
+            //Button 3 will always be there if there is more than 1 button so checks if it is hovered
+			}else if(!strButton2.equalsIgnoreCase("n/a") && (((intMouseX >= 194) && (intMouseX <= 594)) && ((intMouseY >= 385) && (intMouseY <= 485)))){
+                con.setDrawColor(Color.red);
+				drawRectangleOutline(con, 191, 382, 403, 103, 3);
+				
+				//If the button is clicked, it is returned
+				if(intMouseButtonClicked == 1){
+                    if(strButton3.equalsIgnoreCase("n/a")){
+                        return strButton1;
+                    }else{
+                        return strButton3;
+                    }
+				}
+            
+            //Button 4 will always be there if there is more than 1 button so checks if it is hovered
+            }else if(!strButton2.equalsIgnoreCase("n/a") && (((intMouseX >= 647) && (intMouseX <= 1047)) && ((intMouseY >= 385) && (intMouseY <= 485)))){
+                con.setDrawColor(Color.red);
+				drawRectangleOutline(con, 644, 382, 403, 103, 3);
+				
+				//If the button is clicked, it is returned
+				if(intMouseButtonClicked == 1){
+                    if(strButton3.equalsIgnoreCase("n/a")){
+                        return strButton2;
+                    }else{
+                        return strButton4;
+                    }
+				}
+            
+            //Prints black border around all present buttons according to 1, 2, or 5
+            }else{
+                con.setDrawColor(Color.black);
+                if(strButton2.equalsIgnoreCase("n/a")){
+                    drawRectangleOutline(con, 644, 382, 403, 103, 3);
+                }else if(strButton3.equalsIgnoreCase("n/a")){
+                    drawRectangleOutline(con, 191, 382, 403, 103, 3);
+                    drawRectangleOutline(con, 644, 382, 403, 103, 3);
+                }else{
+                    drawRectangleOutline(con, 644, 237, 403, 103, 3);
+                    drawRectangleOutline(con, 422, 528, 403, 103, 3);
+                    drawRectangleOutline(con, 191, 237, 403, 103, 3);
+                    drawRectangleOutline(con, 191, 382, 403, 103, 3);
+                    drawRectangleOutline(con, 644, 382, 403, 103, 3);
+                }
+            }
+
+            //Animates the console at 30 fps
 			con.sleep(33);
 		}
 	}
