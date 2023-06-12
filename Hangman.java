@@ -23,8 +23,8 @@ public class Hangman{
 
 		strChoice = choiceMenu(con, "Play", "Add Theme", "Help", "Leaderboard", "Quit", 40, intMouseX, intMouseY, intMouseButtonClicked);
 
-        con.repaint();
-        con.clear();
+        con.setDrawColor(Color.black);
+        con.fillRect(0, 0, 1280, 720);
 
         if(strChoice.equals("Play")){
             playGame(con);
@@ -44,30 +44,91 @@ public class Hangman{
         //Initializes the required variables
         String strThemeChoice[][];
         String strChoice;
+        String strName;
+        String strWord;
+        String strDisplayWord;
+
         int intThemeLength;
         int intCount1;
+        int intScore = 0;
+        int intRound = 0;
+        int intStrikes;
+
+        boolean blnPlayAgain = true;
+        boolean blnContinue = true;
+
+        BufferedImage imgTemplate = con.loadImage("Images/Play Scenes/Hangman Outline.png");
+
+        //Gets the players name
+        con.print("What is your name\n> ");
+        strName = con.readLine();
+
+        //Clears the console
+        con.clear();
 
         //Asks the player for their theme choice
-        con.print("What theme would you like to play?\n> ");
+        con.println("What theme would you like to play, " + strName + "? Your options are: ");
 
         //Gets the users theme choice
         strChoice = themeSelect(con);
         TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strChoice);
 
-        //Loads their theme choice into an array
+        //Loads their theme choice into an array and sorts it
         intThemeLength = arrayTools.arrayLength(txtThemeChoice);
         strThemeChoice = new String[intThemeLength][2];
         txtThemeChoice.close();
         txtThemeChoice = new TextInputFile("Themes/"+strChoice);
         strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
         txtThemeChoice.close();
-
-        //Sorts the array
         strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
         
         //Prints out the sorted array in the debugging window
         for(intCount1 = 0;intCount1 < intThemeLength; intCount1++){
             System.out.println(strThemeChoice[intCount1][0] + " - " + strThemeChoice[intCount1][1]);
+        }
+
+        //Clears the console
+        con.clear();
+
+        //Repeats it while they want to play again
+        while(blnPlayAgain){
+            //Draws the template image
+            con.drawImage(imgTemplate, 0, 0);
+
+            //Initalizes the variables
+            intStrikes = 0;
+
+            //Creates an array for the chosen word
+            strWord = strThemeChoice[intRound][0];
+            char chrWord[] = new char[strWord.length()];
+
+            //Loads a character array of dashes for the current word
+            for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
+                if(strWord.charAt(intCount1) != ' '){
+                    chrWord[intCount1] = '_';
+                }
+            }
+
+            //Continues while game is still going
+            while(blnContinue){
+                //Sets strDisplayWord to an empty word
+                strDisplayWord = "";
+
+                //Creates strDisplayWord string based on the character array
+                for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
+                    if(chrWord[intCount1] == ' '){
+                        strDisplayWord = strDisplayWord + "/n";
+                    }else{
+                        strDisplayWord = strDisplayWord + chrWord[intCount1] + " ";
+                    }
+                }
+
+                //Prints out strDisplayWord to the terminla
+                System.out.println(strDisplayWord);
+
+                //Breaks out of the loop - going to be removed
+                blnContinue = !blnContinue;
+            }
         }
     }
 
@@ -86,7 +147,7 @@ public class Hangman{
 		}
 	}
     
-    //Theme Select
+    //Theme Select method
     public static String themeSelect(Console con){
         //Variable Definitions
         String strChoice;
@@ -104,7 +165,6 @@ public class Hangman{
         txtThemes.close();
 
         //Prints out all the theme options
-        con.println("What theme would you like to select? Your options are:");
         for(intCount = 0; intCount < intThemeLength;intCount++){
             con.println(strThemes[intCount]);
         }
@@ -212,7 +272,6 @@ public class Hangman{
 			
 			//Repaints the scene
 			con.repaint();
-			
 
 			//If there are 5 buttons and button 1 is hovered, this runs
 			if(!strButton3.equalsIgnoreCase("n/a") && ((((intMouseX >= 194) && (intMouseX <= 594)) && ((intMouseY >= 240) && (intMouseY <= 340))))){
@@ -235,7 +294,7 @@ public class Hangman{
 				}
 			
 			//If there are 5 buttons or 1 button and button 5 is hovered, this runs
-			}else if((!strButton2.equalsIgnoreCase("n/a") || !strButton3.equalsIgnoreCase("n/a")) && ((((intMouseX >= 425) && (intMouseX <= 825)) && ((intMouseY >= 531) && (intMouseY <= 631))))){
+			}else if((strButton2.equalsIgnoreCase("n/a") || !strButton3.equalsIgnoreCase("n/a")) && ((((intMouseX >= 425) && (intMouseX <= 825)) && ((intMouseY >= 531) && (intMouseY <= 631))))){
 				con.setDrawColor(Color.red);
 				drawRectangleOutline(con, 422, 528, 403, 103, 3);
 				
