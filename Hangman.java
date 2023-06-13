@@ -101,7 +101,8 @@ public class Hangman{
         while(blnPlayAgain){
             //Draws the template image
             con.drawImage(imgTemplate, 0, 0);
-
+			
+			//Repaints the console
             con.repaint();
 
             //Initalizes the variables
@@ -131,7 +132,7 @@ public class Hangman{
                 //Creates strDisplayWord string based on the character array
                 for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
                     if(chrWord[intCount1] == ' '){
-                        strDisplayWord = strDisplayWord + "/n";
+                        strDisplayWord = strDisplayWord + " ";
                     }else{
                         strDisplayWord = strDisplayWord + chrWord[intCount1] + " ";
                     }
@@ -163,8 +164,8 @@ public class Hangman{
                     con.println("Correct!");
                     con.drawImage(imgWin, 0, 0);
                     blnContinue = false;
-                    con.sleep(5000);
-                    strChoice = choiceMenu(con, "Yes", "No", "n/a", "n/a", "n/a", 50, intMouseX, intMouseY, intMouseButtonClicked);
+                    con.sleep(2000);
+                   
                 //Runs if they are incorrect
                 }else{
                     //Checks if they have any chances left. If they do, this runs
@@ -187,12 +188,17 @@ public class Hangman{
                     //If they do not, this runs
                     }else{
                         con.println("You lost! The word was " + strWord);
-                        con.fillRect(1280, 720, 0, 0);
+                        con.sleep(200);
                         blnContinue = false;
                     }
                 }
             }
+            
+            //This asks the user if they want to play again
+            con.setDrawColor(Color.black);
+            con.fillRect(0, 0, 1280, 720);
             strChoice = choiceMenu(con, "Yes", "No", "n/a", "n/a", "n/a", 50, intMouseX, intMouseY, intMouseButtonClicked);
+            
             if(strChoice.equals("No")){
                 TextOutputFile txtLeaderboard = new TextOutputFile("Leaderboard.txt", true);
                 txtLeaderboard.println(strName);
@@ -204,6 +210,8 @@ public class Hangman{
                 con.sleep(500);
             }
         }
+        
+        homeScreen(con);
     }
 
     //Draws a rectangle with a custom thickness
@@ -284,6 +292,7 @@ public class Hangman{
         con.print(strTheme + " has been created!");
 
         choiceMenu(con, "Back", "N/A", "N/A", "N/A", "N/A", 50, intMouseX, intMouseY, intMouseButtonClicked);
+        homeScreen(con);
     }
     
     //Choice Menu to display either 1 2 or 5 choices
