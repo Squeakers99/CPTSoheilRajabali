@@ -20,7 +20,9 @@ public class Hangman{
 		int intMouseY = 0;
 		int intMouseButtonClicked = 0;
 		String strChoice = "";
-
+		
+		con.clear();
+		
 		strChoice = choiceMenu(con, "Play", "Add Theme", "Help", "Leaderboard", "Quit", 40, intMouseX, intMouseY, intMouseButtonClicked);
 
         con.setDrawColor(Color.black);
@@ -99,6 +101,9 @@ public class Hangman{
 
         //Repeats it while they want to play again
         while(blnPlayAgain){
+			//Clears the console
+			con.clear();
+			
             //Draws the template image
             con.drawImage(imgTemplate, 0, 0);
 			
@@ -210,7 +215,10 @@ public class Hangman{
                 con.sleep(500);
             }
         }
+        //Delays to ensure no misclick
+        con.sleep(500);
         
+        //If they click no, goes back to the home screen
         homeScreen(con);
     }
 
