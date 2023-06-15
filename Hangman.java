@@ -1,16 +1,21 @@
 /*
  * Soheil Rajabali
  * Hangman
- * V4.0
+ * V5.0
  */
 
+ //Imports all required libraries
 import arc.*;
 import java.awt.*;
 import java.awt.image.*;
 
 public class Hangman{
+    //Main method to run the code
     public static void main(String[] args){
+        //Initializes the Console
 		Console con = new Console("Hangman", 1280, 720);
+
+        //Calls the home screen to start off the game
 		homeScreen(con);
     }
     
@@ -64,6 +69,7 @@ public class Hangman{
         String strWord;
         String strDisplayWord;
         String strGuess;
+        String strTheme;
 
         int intThemeLength;
         int intCount1;
@@ -71,6 +77,8 @@ public class Hangman{
         int intRound = 0;
         int intStrikes;
         int intRandInt;
+        int intDrawStringY;
+        int intDrawStringX;
 
         boolean blnPlayAgain = true;
         boolean blnContinue;
@@ -93,14 +101,14 @@ public class Hangman{
         con.println("What theme would you like to play, " + strName + "? Your options are: ");
 
         //Gets the users theme choice
-        strChoice = themeSelect(con);
-        TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strChoice);
+        strTheme = themeSelect(con);
+        TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strTheme);
 
         //Loads their theme choice into an array and sorts it
         intThemeLength = arrayTools.arrayLength(txtThemeChoice);
         strThemeChoice = new String[intThemeLength][2];
         txtThemeChoice.close();
-        txtThemeChoice = new TextInputFile("Themes/"+strChoice);
+        txtThemeChoice = new TextInputFile("Themes/"+strTheme);
         strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
         txtThemeChoice.close();
         strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
@@ -115,105 +123,127 @@ public class Hangman{
 
         //Repeats it while they want to play again
         while(blnPlayAgain){
-			//Clears the console
-			con.clear();
-			
-            //Draws the template image
-            con.drawImage(imgTemplate, 0, 0);
-			
-			//Repaints the console
-            con.repaint();
+            //Tries to play the game
+            try{
+                //Clears the console
+                con.clear();
 
-            //Initalizes the variables
-            intStrikes = 0;
-            blnContinue = true;
+                //Initalizes the variables
+                intStrikes = 0;
+                blnContinue = true;
 
-            //Creates an array for the chosen word
-            strWord = strThemeChoice[intRound][0];
-            char chrWord[] = new char[strWord.length()];
+                //Creates an array for the chosen word
+                strWord = strThemeChoice[intRound][0];
+                char chrWord[] = new char[strWord.length()];
 
-            //Prints the word to the terminal
-            System.out.println("The word is: " + strWord);
+                //Draws the template image
+                con.drawImage(imgTemplate, 0, 0);
+                
+                //Repaints the console
+                con.repaint();
 
-            //Loads a character array of dashes for the current word
-            for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
-                if(strWord.charAt(intCount1) != ' '){
-                    chrWord[intCount1] = '_';
-                }
-            }
+                //Prints the word to the terminal
+                System.out.println("The word is: " + strWord);
 
-            //Continues while game is still going
-            while(blnContinue){
-                //Initializes the display word and guess
-                strDisplayWord = "";
-                strGuess = "";
-
-                //Creates strDisplayWord string based on the character array
+                //Loads a character array of dashes for the current word
                 for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
-                    if(chrWord[intCount1] == ' '){
-                        strDisplayWord = strDisplayWord + " ";
+                    if(strWord.charAt(intCount1) != ' '){
+                        chrWord[intCount1] = '_';
                     }else{
-                        strDisplayWord = strDisplayWord + chrWord[intCount1] + " ";
+                        chrWord[intCount1] = ' ';
                     }
                 }
 
-                //Prints out strDisplayWord to the terminal
-                System.out.println("What is being printed: " + strDisplayWord);
+                //Continues while game is still going
+                while(blnContinue){
+                    //Initializes the display word and guess
+                    strDisplayWord = "";
+                    strGuess = "";
 
-                //Sets the font to the default font but bigger
-                con.setDrawFont(fntDrawFont);
-                con.setDrawColor(Color.white);
-
-                //Redraws the console
-                con.repaint();
-
-                //Draws out the display word
-                con.drawString(strDisplayWord, 500, 300);
-
-                //Asks them if they did not lose
-                if(intStrikes != 6){
-                    //Asks the player for their guess
-                    con.print("What do you think the word is?\n> ");
-                    strGuess = con.readLine();
-                }
-
-                //Runs if they are correct
-                if(strGuess.equalsIgnoreCase(strWord)){
-                    intScore++;
-                    con.println("Correct!");
-                    con.drawImage(imgWin, 0, 0);
-                    blnContinue = false;
-                    con.sleep(2000);
-                    con.clear();
-                   
-                //Runs if they are incorrect
-                }else{
-                    //Checks if they have any chances left. If they do, this runs
-                    if(intStrikes != 6){
-                        intStrikes++;
-                        imgBackground = con.loadImage("Images/Play Scenes/Hangman " + intStrikes + ".png");
-                        con.drawImage(imgBackground, 0, 0);
-                        con.println("Incorrect! Try again.");
-                        blnValidRandom = false;
-                        while(!blnValidRandom){
-                            intRandInt = (int)Math.floor(Math.random()*(strWord.length()));
-                            if(chrWord[intRandInt] == '_'){
-                                chrWord[intRandInt] = strWord.charAt(intRandInt);
-                                blnValidRandom = true;
-                            }
+                    //Creates strDisplayWord string based on the character array
+                    for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
+                        if(chrWord[intCount1] == ' '){
+                            strDisplayWord = strDisplayWord + " ";
+                        }else{
+                            strDisplayWord = strDisplayWord + chrWord[intCount1];
                         }
+                    }
+
+                    //Prints out strDisplayWord to the terminal
+                    System.out.println("What is being printed: " + strDisplayWord);
+
+                    //Sets the font to the default font but bigger
+                    con.setDrawFont(fntDrawFont);
+                    con.setDrawColor(Color.white);
+
+                    //Redraws the console
+                    con.repaint();
+
+                    //Sets the X and Y for drawstring
+                    intDrawStringX = 450;
+                    intDrawStringY = 200;
+
+                    //Draws out the display word
+                    for(intCount1 = 0; intCount1 < strWord.length(); intCount1++){
+                        if(strDisplayWord.charAt(intCount1) == ' '){
+                            intDrawStringX = 450;
+                            intDrawStringY += 110;
+                        }else{
+                            intDrawStringX += 60;
+                            con.drawString(String.valueOf(strDisplayWord.charAt(intCount1)), intDrawStringX, intDrawStringY);
+                        }
+                        con.repaint();
+                    }
+
+                    //Asks them if they did not lose
+                    if(intStrikes != 6){
+                        //Asks the player for their guess
+                        con.print("What do you think the word is?\n> ");
+                        strGuess = con.readLine();
+                    }
+
+                    //Runs if they are correct
+                    if(strGuess.equalsIgnoreCase(strWord)){
+                        intScore++;
+                        con.println("Correct!");
+                        con.drawImage(imgWin, 0, 0);
+                        blnContinue = false;
                         con.sleep(2000);
                         con.clear();
                     
-                    //If they do not, this runs
+                    //Runs if they are incorrect
                     }else{
-                        con.println("You lost! The word was " + strWord);
-                        con.sleep(200);
-                        blnContinue = false;
+                        //Checks if they have any chances left. If they do, this runs
+                        if(intStrikes != 6){
+                            intStrikes++;
+                            imgBackground = con.loadImage("Images/Play Scenes/Hangman " + intStrikes + ".png");
+                            con.drawImage(imgBackground, 0, 0);
+                            con.println("Incorrect! Try again.");
+                            blnValidRandom = false;
+                            while(!blnValidRandom){
+                                intRandInt = (int)Math.floor(Math.random()*(strWord.length()));
+                                if(chrWord[intRandInt] == '_'){
+                                    chrWord[intRandInt] = strWord.charAt(intRandInt);
+                                    blnValidRandom = true;
+                                }
+                            }
+                            con.sleep(2000);
+                            con.clear();
+                        
+                        //If they do not, this runs
+                        }else{
+                            con.println("You lost! The word was " + strWord);
+                            con.sleep(200);
+                            blnContinue = false;
+                        }
                     }
                 }
-            }
             
+            //If the code gives an array out of bounds error (there are no more words), it prints a message saying that there are no more words to give
+            }catch(Exception ArrayIndexOutOfBoundsException){
+                con.println("There are no more words to give you!");
+            }
+
             //This asks the user if they want to play again
             con.setDrawColor(Color.black);
             con.fillRect(0, 0, 1280, 720);
@@ -223,7 +253,7 @@ public class Hangman{
             if(strChoice.equals("No")){
                 TextOutputFile txtLeaderboard = new TextOutputFile("Leaderboard.txt", true);
                 txtLeaderboard.println(strName);
-                txtLeaderboard.println(strChoice);
+                txtLeaderboard.println(strTheme);
                 txtLeaderboard.println(intScore);
                 txtLeaderboard.close();
                 blnPlayAgain = false;
@@ -242,12 +272,73 @@ public class Hangman{
     //Method to draw the leaderboard
     public static void leaderboard(Console con, int intMouseX, int intMouseY, int intMouseButtonClicked){
         //Defines the variables to create the leaderboard
+        String strLeaderboard[][];
+        String strScore;
+        String strName;
+        String strTheme;
+
+        int intLeaderboardLength;
+        int intPlayers;
+        int intCount;
+        int intDisplayLoop;
+        int intTextY = 165;
+
+        TextInputFile txtLeaderboard = new TextInputFile("Leaderboard.txt");
         BufferedImage imgBackground = con.loadImage("Images/Leaderboard.png");
+        Font fntLeaderboardFont = con.loadFont("Fonts/Leaderboard Font.ttf", 50);
+
+        //Loads the leaderboard into an array and sorts it
+        intLeaderboardLength = arrayTools.arrayLength(txtLeaderboard);
+        intPlayers = intLeaderboardLength/3;
+        strLeaderboard = new String[intPlayers][3];
+        txtLeaderboard.close();
+        txtLeaderboard = new TextInputFile("Leaderboard.txt");
+        strLeaderboard = arrayTools.loadLeaderboard(txtLeaderboard, intPlayers);
+        txtLeaderboard.close();
+        strLeaderboard = arrayTools.sortLeaderboard(strLeaderboard, intPlayers);
+
+        //Debug message to print out all the users sorted in order
+        for(intCount = 0; intCount < intPlayers; intCount++){
+            System.out.print("Name: " + strLeaderboard[intCount][0] + ", ");
+            System.out.print("Theme: " + strLeaderboard[intCount][1] + ", ");
+            System.out.println("Score: " + strLeaderboard[intCount][2]);
+        }
 
         //Draws the background image
         con.drawImage(imgBackground, 0, 0);
         con.repaint();
 
+        //Sets the draw font
+        con.setDrawFont(fntLeaderboardFont);
+
+        //Determines if all the players need to be drawn or only top 5
+        if(intPlayers >= 5){
+            intDisplayLoop = 5;
+        }else{
+            intDisplayLoop = intPlayers;
+        }
+
+        //Displays the top scores
+        for(intCount = 0; intCount < intDisplayLoop; intCount++){
+            //Assigns each to variables
+            strName = strLeaderboard[intCount][0];
+            strTheme = strLeaderboard[intCount][1];
+            strScore = strLeaderboard[intCount][2];
+
+            //Draws out score, rank, name, and theme
+            con.drawString(String.valueOf(intCount+1), 85, intTextY);
+            con.repaint();
+            con.drawString(strName, 180, intTextY);
+            con.repaint();
+            con.drawString(strScore, 350, intTextY);
+            con.repaint();
+            con.drawString(strTheme, 950, intTextY);
+            con.repaint();
+
+            //Adds 80 to the y to go to the next box
+            intTextY += 80;
+        }
+        
         //Prints a back button
         backButton(con, intMouseX, intMouseY, intMouseButtonClicked);
         
@@ -357,6 +448,7 @@ public class Hangman{
         //Defines variables to create a theme
         String strWord = "";
         String strTheme;
+        TextOutputFile txtThemeFile;
         TextOutputFile txtThemes = new TextOutputFile("Themes.txt",true);
         
         //Gets the name of the theme
@@ -365,16 +457,20 @@ public class Hangman{
         txtThemes.println(strTheme);
         strTheme = strTheme + ".txt";
 
+        //Clears the console
+        con.clear();
+
         //Creates the file for that theme
-        TextOutputFile txtThemeFile = new TextOutputFile("Themes/"+strTheme);
+        txtThemeFile = new TextOutputFile("Themes/"+strTheme);
 
         //Keeps repeating until they input 'stop' to get words for that theme
         while(!strWord.equalsIgnoreCase("stop")){
-        con.print("Input a word (type 'stop' to stop)\n> ");
-        strWord = con.readLine();
+            con.print("Input a word (type 'stop' to stop)\n(note: all words have to be 6 letters or more)\n> ");
+            strWord = con.readLine();
             if(!strWord.equalsIgnoreCase("stop")){
                 txtThemeFile.println(strWord);
             }
+            con.clear();
         }
 
         //Closes the theme file and the new themes file
