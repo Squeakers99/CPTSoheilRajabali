@@ -16,18 +16,29 @@ public class Hangman{
     
     //Draws the Home Screen of the Game
     public static void homeScreen(Console con){
+        //Initializes the variables for the home screen
 		int intMouseX = 0;
 		int intMouseY = 0;
 		int intMouseButtonClicked = 0;
+
 		String strChoice = "";
+
+        BufferedImage imgTitle = con.loadImage("Images/Title.png");
 		
+        //Clears the Console
 		con.clear();
-		
+        
+        //Draws out the title
+        con.drawImage(imgTitle, 265, 40);
+
+        //Gets the users selection
 		strChoice = choiceMenu(con, "Play", "Add Theme", "Help", "Leaderboard", "Quit", 40, intMouseX, intMouseY, intMouseButtonClicked);
 
+        //Sets the background to black
         con.setDrawColor(Color.black);
         con.fillRect(0, 0, 1280, 720);
 
+        //Runs a method based on what the player wants to do
         if(strChoice.equals("Play")){
             playGame(con, intMouseX, intMouseY, intMouseButtonClicked);
         }else if(strChoice.equals("Add Theme")){
@@ -35,7 +46,10 @@ public class Hangman{
         }else if(strChoice.equals("Help")){
 
         }else if(strChoice.equals("Leaderboard")){
-
+            leaderboard(con, intMouseX, intMouseY, intMouseButtonClicked);
+        }else if(strChoice.equals("Secret Menu")){
+            con.sleep(500);
+            homeScreen(con);
         }else{
             con.closeConsole();
         }
@@ -143,8 +157,8 @@ public class Hangman{
                     }
                 }
 
-                //Prints out strDisplayWord to the terminla
-                System.out.println(strDisplayWord);
+                //Prints out strDisplayWord to the terminal
+                System.out.println("What is being printed: " + strDisplayWord);
 
                 //Sets the font to the default font but bigger
                 con.setDrawFont(fntDrawFont);
@@ -170,6 +184,7 @@ public class Hangman{
                     con.drawImage(imgWin, 0, 0);
                     blnContinue = false;
                     con.sleep(2000);
+                    con.clear();
                    
                 //Runs if they are incorrect
                 }else{
@@ -204,9 +219,11 @@ public class Hangman{
             con.fillRect(0, 0, 1280, 720);
             strChoice = choiceMenu(con, "Yes", "No", "n/a", "n/a", "n/a", 50, intMouseX, intMouseY, intMouseButtonClicked);
             
+            //This runs if the user does not want to play again
             if(strChoice.equals("No")){
                 TextOutputFile txtLeaderboard = new TextOutputFile("Leaderboard.txt", true);
                 txtLeaderboard.println(strName);
+                txtLeaderboard.println(strChoice);
                 txtLeaderboard.println(intScore);
                 txtLeaderboard.close();
                 blnPlayAgain = false;
@@ -220,6 +237,74 @@ public class Hangman{
         
         //If they click no, goes back to the home screen
         homeScreen(con);
+    }
+
+    //Method to draw the leaderboard
+    public static void leaderboard(Console con, int intMouseX, int intMouseY, int intMouseButtonClicked){
+        //Defines the variables to create the leaderboard
+        BufferedImage imgBackground = con.loadImage("Images/Leaderboard.png");
+
+        //Draws the background image
+        con.drawImage(imgBackground, 0, 0);
+        con.repaint();
+
+        //Prints a back button
+        backButton(con, intMouseX, intMouseY, intMouseButtonClicked);
+        
+        //Delays the console to have your own input
+        con.sleep(500);
+
+        //Goes back to home screen
+        homeScreen(con);
+    }
+
+    //Method to create a back button (For leaderboard only)
+    public static void backButton(Console con, int intMouseX, int intMouseY, int intMouseButtonClicked){
+        //Defines variables
+        boolean blnRepeat = true;
+
+        Font fntButtonFont = con.loadFont("Fonts/Regular Font.ttf", 50);
+        
+        //Draws the button
+        con.setDrawColor(Color.gray);
+        con.fillRect(490, 600, 300, 75);
+        con.setDrawColor(Color.white);
+        con.setDrawFont(fntButtonFont);
+        con.drawString("Back", 575, 595);
+
+        //Redraws the console
+        con.repaint();
+
+        //Repeats until the user clicks back
+        while(blnRepeat){
+            //Gets the inputs from the user
+            intMouseX = con.currentMouseX();
+            intMouseY = con.currentMouseY();
+            intMouseButtonClicked = con.currentMouseButton();
+
+            //Repaints the console
+            con.repaint();
+
+            //If the user is hovering the button, this runs
+            if(((intMouseX > 490) && (intMouseX < 790)) && ((intMouseY > 600) && (intMouseY < 675))){
+                con.setDrawColor(Color.red);
+                drawRectangleOutline(con, 487, 597, 303, 78, 3);
+
+                //If the user clicks the button, this gets out of the loop
+                if(intMouseButtonClicked == 1){
+                    blnRepeat = false;
+                }
+            
+            //This draws a black box to reset the button
+            }else{
+                con.setDrawColor(Color.black);
+                drawRectangleOutline(con, 487, 597, 303, 78, 3);
+            }
+        }
+
+        //Paints a black box to reset the screen
+        con.setDrawColor(Color.black);
+        con.fillRect(0, 0, 1280, 720);
     }
 
     //Draws a rectangle with a custom thickness
@@ -299,11 +384,17 @@ public class Hangman{
         //Prints a successful message
         con.print(strTheme + " has been created!");
 
-        choiceMenu(con, "Back", "N/A", "N/A", "N/A", "N/A", 50, intMouseX, intMouseY, intMouseButtonClicked);
+        //Prints a back button
+        backButton(con, intMouseX, intMouseY, intMouseButtonClicked);
+        
+        //Delays the console to have your own input
+        con.sleep(500);
+
+        //Goes back to home screen
         homeScreen(con);
     }
     
-    //Choice Menu to display either 1 2 or 5 choices
+    //Choice Menu to display either 2 or 5 choices
 	public static String choiceMenu(Console con, String strButton1, String strButton2, String strButton3, String strButton4, String strButton5, int intFontSize, int intMouseX, int intMouseY, int intMouseButtonClicked){
 		//Defines and loads in the fonts
 		Font fntButtonFont;
@@ -314,17 +405,8 @@ public class Hangman{
 		//Sets the color to grey
 		con.setDrawColor(Color.gray);
 		
-        //If only 1 button is needed, only draws 1 button
-        if(strButton2.equalsIgnoreCase("n/a")){
-            con.fillRect(425, 531, 400, 100);
-
-            con.setDrawColor(Color.white);
-			con.setDrawFont(fntButtonFont);
-
-            con.drawString(strButton1, 435, 526);
-        }
 		//If only 2 buttons are needed, only draws 2 buttons
-		else if(strButton3.equalsIgnoreCase("n/a")){
+		if(strButton3.equalsIgnoreCase("n/a")){
 			con.fillRect(194, 385, 400, 100);
 			con.fillRect(647, 385, 400, 100);
 			
@@ -355,6 +437,7 @@ public class Hangman{
 		//Resets the font back to normal
 		con.setDrawFont(fntRegularFont);
 		
+        //Infinite loop that repeats until a button is clicked
 		while(true){
 			//Gets the mouse inputs from the user
 			intMouseX = con.currentMouseX();
@@ -391,11 +474,7 @@ public class Hangman{
 				
 				//If the button is clicked, it is returned
 				if(intMouseButtonClicked == 1){
-                    if(strButton2.equalsIgnoreCase("n/a")){
-                        return strButton1;
-                    }else{
-                        return strButton5;
-                    }
+                    return strButton5;
 				}
 
             //Button 3 will always be there if there is more than 1 button so checks if it is hovered
@@ -426,12 +505,16 @@ public class Hangman{
                     }
 				}
             
+            //If the Hangman Logo is clicked, this runs
+            }else if(!strButton5.equalsIgnoreCase("n/a") && (((intMouseX > 265) && (intMouseX < 1015)) && ((intMouseY > 40) && (intMouseY < 230)))){
+                if(intMouseButtonClicked == 1){
+                    return "Secret Menu";
+                }
+            
             //Prints black border around all present buttons according to 1, 2, or 5
             }else{
                 con.setDrawColor(Color.black);
-                if(strButton2.equalsIgnoreCase("n/a")){
-                    drawRectangleOutline(con, 644, 382, 403, 103, 3);
-                }else if(strButton3.equalsIgnoreCase("n/a")){
+                if(strButton3.equalsIgnoreCase("n/a")){
                     drawRectangleOutline(con, 191, 382, 403, 103, 3);
                     drawRectangleOutline(con, 644, 382, 403, 103, 3);
                 }else{
