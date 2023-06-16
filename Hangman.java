@@ -53,8 +53,7 @@ public class Hangman{
         }else if(strChoice.equals("Leaderboard")){
             leaderboard(con, intMouseX, intMouseY, intMouseButtonClicked);
         }else if(strChoice.equals("Secret Menu")){
-            con.sleep(500);
-            homeScreen(con);
+            secretMenu(con, intMouseX, intMouseY, intMouseButtonClicked);
         }else{
             con.closeConsole();
         }
@@ -365,6 +364,67 @@ public class Hangman{
         con.sleep(500);
 
         //Goes back to home screen
+        homeScreen(con);
+    }
+
+    //Method for the secret menu
+    public static void secretMenu(Console con, int intMouseX, int intMouseY, int intMouseButtonClicked){
+        String strJokes[][];
+        String strQuestion;
+        String strResponse;
+        String strChoice;
+
+        int intJokesLength;
+        int intJokes;
+        int intJokesNumber = 0;
+
+        boolean blnDisplayJoke = true;
+        TextInputFile txtJokes = new TextInputFile("Jokes.txt");
+
+        //Loads the jokes into an array and sorts it
+        intJokesLength = arrayTools.arrayLength(txtJokes);
+        intJokes = intJokesLength/3;
+        strJokes = new String[intJokes][3];
+        txtJokes.close();
+        txtJokes = new TextInputFile("Jokes.txt");
+        strJokes = arrayTools.loadJokes(txtJokes, intJokes);
+        txtJokes.close();
+        strJokes = arrayTools.sortLeaderboard(strJokes, intJokes);
+
+        //This displays a joke as long as they want to hear one
+        while(blnDisplayJoke){
+            //This tries to tell them a joke
+            try{
+                strQuestion = strJokes[intJokesNumber][0];
+                strResponse = strJokes[intJokesNumber][1];
+
+                con.println(strQuestion);
+                con.readLine();
+                con.println(strResponse);
+                con.println("HAHAHAHAHA");
+                con.print("Do you want to hear another joke?\n> ");
+                strChoice = con.readLine();
+                if(strChoice.equalsIgnoreCase("yes")){
+                    intJokesNumber++;
+                    con.clear();
+                }else{
+                    blnDisplayJoke = false;
+                }
+            
+            //If the code ran out of jokes, this message displays
+            }catch(Exception ArrayIndexOutOfBoundsException){
+                con.println("Sorry! I have no more jokes to tell");
+                blnDisplayJoke = false;
+            }
+        }
+
+        //This prints a back button
+        backButton(con, intMouseX, intMouseY, intMouseButtonClicked);
+
+        //This delays the console to ensure no misclick
+        con.sleep(500);
+
+        //This goes back to the home screen
         homeScreen(con);
     }
 

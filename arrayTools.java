@@ -71,6 +71,26 @@ public class arrayTools {
         return strArray;
     }
 
+    //Method to create a 2D array for jokes
+    public static String[][] loadJokes(TextInputFile txtFile, int intCount){
+        //Defines variables required
+        int intCount1;
+        int intRandInt;
+        String strArray[][] = new String[intCount][3];
+
+        //Loops to load the array (Column 1 is the item, Column 2 is a random number)
+        for(intCount1 = 0; intCount1 < intCount; intCount1++){
+            intRandInt = (int)Math.floor(Math.random()*(intCount));
+            strArray[intCount1][0] = txtFile.readLine();
+            strArray[intCount1][1] = txtFile.readLine();
+            strArray[intCount1][2] = String.valueOf(intRandInt);
+        }
+
+        //Closes file and returns your 2D array
+        txtFile.close();
+        return strArray;
+    }
+    
     //Bubble sort method to sort an array
     public static String[][] bubbleSort(String strSortedArray[][], int intCount){
 		//Defines required variables for sorting
