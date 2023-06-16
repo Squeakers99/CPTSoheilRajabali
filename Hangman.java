@@ -404,6 +404,7 @@ public class Hangman{
                 strResponse = strJokes[intJokesNumber][1];
 
                 con.println(strQuestion);
+                con.println("(Click enter to see the punchline)");
                 con.readLine();
                 con.println(strResponse);
                 con.println("HAHAHAHAHA");
