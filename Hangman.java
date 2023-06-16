@@ -21,6 +21,10 @@ public class Hangman{
     
     //Draws the Home Screen of the Game
     public static void homeScreen(Console con){
+        //Resets the screen
+        con.setDrawColor(Color.black);
+        con.fillRect(0, 0, 1280, 720);
+
         //Initializes the variables for the home screen
 		int intMouseX = 0;
 		int intMouseY = 0;
@@ -102,13 +106,13 @@ public class Hangman{
 
         //Gets the users theme choice
         strTheme = themeSelect(con);
-        TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strTheme);
+        TextInputFile txtThemeChoice = new TextInputFile("Themes/"+strTheme+".txt");
 
         //Loads their theme choice into an array and sorts it
         intThemeLength = arrayTools.arrayLength(txtThemeChoice);
         strThemeChoice = new String[intThemeLength][2];
         txtThemeChoice.close();
-        txtThemeChoice = new TextInputFile("Themes/"+strTheme);
+        txtThemeChoice = new TextInputFile("Themes/"+strTheme+".txt");
         strThemeChoice = arrayTools.loadTheme(txtThemeChoice, intThemeLength);
         txtThemeChoice.close();
         strThemeChoice = arrayTools.bubbleSort(strThemeChoice, intThemeLength);
@@ -250,6 +254,7 @@ public class Hangman{
 
             con.setDrawFont(fntPlayAgain);
             con.setDrawColor(Color.white);
+            con.println("Your score is currently " + intScore);
             con.drawString("Play Again", 170, 50);
             con.repaint();
             strChoice = choiceMenu(con, "Yes", "No", "n/a", "n/a", "n/a", 50, intMouseX, intMouseY, intMouseButtonClicked);
@@ -517,7 +522,6 @@ public class Hangman{
         //Gets the users input
         con.print("> ");
         strChoice = con.readLine();
-        strChoice = strChoice+".txt";
         
         return strChoice;
     }

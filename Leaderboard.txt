@@ -10,3 +10,24 @@ Drinks
 Vikasini
 Countries
 6
+Navaz
+Sports
+1
+Names
+names
+1
+navaz
+names
+2
+mike
+TV Sizes
+0
+suhana
+wonderland rides
+1
+suhana
+sports
+11
+Soheil
+names
+4
