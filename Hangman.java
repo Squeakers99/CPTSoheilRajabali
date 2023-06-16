@@ -1,7 +1,7 @@
 /*
  * Soheil Rajabali
  * Hangman
- * V5.0
+ * V6.0
  */
 
  //Imports all required libraries
@@ -49,7 +49,7 @@ public class Hangman{
         }else if(strChoice.equals("Add Theme")){
             createTheme(con, intMouseX, intMouseY, intMouseButtonClicked);
         }else if(strChoice.equals("Help")){
-
+            help(con, intMouseX, intMouseY, intMouseButtonClicked);
         }else if(strChoice.equals("Leaderboard")){
             leaderboard(con, intMouseX, intMouseY, intMouseButtonClicked);
         }else if(strChoice.equals("Secret Menu")){
@@ -89,6 +89,7 @@ public class Hangman{
         BufferedImage imgBackground;
 
         Font fntDrawFont = con.loadFont("Fonts/Regular Font.ttf", 100);
+        Font fntPlayAgain = con.loadFont("Fonts/Play Again.ttf", 150);
 
         //Gets the players name
         con.print("What is your name\n> ");
@@ -247,6 +248,11 @@ public class Hangman{
             //This asks the user if they want to play again
             con.setDrawColor(Color.black);
             con.fillRect(0, 0, 1280, 720);
+
+            con.setDrawFont(fntPlayAgain);
+            con.setDrawColor(Color.white);
+            con.drawString("Play Again", 170, 50);
+            con.repaint();
             strChoice = choiceMenu(con, "Yes", "No", "n/a", "n/a", "n/a", 50, intMouseX, intMouseY, intMouseButtonClicked);
             
             //This runs if the user does not want to play again
@@ -262,10 +268,23 @@ public class Hangman{
                 con.sleep(500);
             }
         }
+        
         //Delays to ensure no misclick
         con.sleep(500);
         
         //If they click no, goes back to the home screen
+        homeScreen(con);
+    }
+
+    //Method to draw the help screen
+    public static void help(Console con, int intMouseX, int intMouseY, int intMouseButtonClicked){
+        //Loads the help screen
+        BufferedImage imgHelp = con.loadImage("Images/Help.png");
+
+        //Draws the help screen
+        con.drawImage(imgHelp, 0, 0);
+        backButton(con, intMouseX, intMouseY, intMouseButtonClicked);
+        con.sleep(500);
         homeScreen(con);
     }
 
@@ -338,7 +357,7 @@ public class Hangman{
             //Adds 80 to the y to go to the next box
             intTextY += 80;
         }
-        
+
         //Prints a back button
         backButton(con, intMouseX, intMouseY, intMouseButtonClicked);
         
